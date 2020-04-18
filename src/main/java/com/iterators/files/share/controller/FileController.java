@@ -20,7 +20,7 @@ public class FileController {
 
     @PostMapping(value = "/uploadFile")
     public FileUploadResponse uploadSingleFile(@RequestParam("file") MultipartFile file) {
-        log.info(MARKER, "receive a req for upload single file");
+        log.info(MARKER + "receive a req for upload single file，name: {}", file.getOriginalFilename());
 
         return null;
     }
