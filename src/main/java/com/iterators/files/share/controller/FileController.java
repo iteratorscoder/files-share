@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 处理文件上传和下载的逻辑，需要继续完成
+ * @link https://juejin.im/post/5c9e57e2f265da307a160328  参考文章
  * @author iterators
  * @time 2020.04.18
  */
