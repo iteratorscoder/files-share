@@ -1,1 +1,20 @@
+server:
+  port: 8080
+spring:
+  profiles:
+    active: dev
 
+---
+spring:
+  profiles: dev
+  servlet:
+    multipart:
+      enabled: true # 开启 multipart 上传功能
+      file-size-threshold: 2KB # 文件写入磁盘的阈值
+      max-file-size: 200MB # 最大文件大小
+      max-request-size: 215MB # 最大请求大小
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+file:
+  upload-dir: ./uploads #文件存储所需参数,所有上传的文件都将存储在此目录下
