@@ -21,7 +21,4 @@
 - `StringUtils.cleanPath`
 - `String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFile/").path(fileName).toUriString();`
 - `new UrlResource(filePath.toUri())`
-- `MultipartFile`
-                 
-                 
-                 
+- `MultipartFile`  
