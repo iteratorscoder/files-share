@@ -37,6 +37,7 @@ public class FileController {
     public FileUploadResponse uploadSingleFile(@RequestParam("file") MultipartFile file) {
         log.info(MARKER + "receive a req for upload single file，name: {}", file.getOriginalFilename());
         FileUploadResponse response = fileService.storeFile(file);
+        log.info(MARKER + "store file success with data: {}", response);
         return response;
     }
 }
