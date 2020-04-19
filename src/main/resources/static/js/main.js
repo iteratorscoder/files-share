@@ -22,7 +22,7 @@ function uploadSingleFile(file) {
         let response = JSON.parse(xhr.responseText);
         if(xhr.status === 200) {
             singleFileUploadError.style.display = "none";
-            singleFileUploadSuccess.innerHTML = "<p>File Uploaded Successfully.</p><p>DownloadUrl : <a href='" + response.fileDownloadUri + "' target='_blank'>" + response.fileName + "</a></p> <p>Share With QR <a href='" + "http://localhost:8080/qr?file=" + response.fileName +"'><img src=\"https://img.icons8.com/dusk/50/000000/link.png\"/></a></p>";
+            singleFileUploadSuccess.innerHTML = "<p>File Uploaded Successfully.</p><p>DownloadUrl : <a href='" + response.fileDownloadUri + "' target='_blank'>" + response.fileName + "</a></p> <p>Share With QR <a href='" + "http://localhost:8080/qr?file=" + response.fileName +"'><img src='"+"https://img.icons8.com/dusk/50/000000/link.png"+"'/></a></p>";
             singleFileUploadSuccess.style.display = "block";
         } else {
             singleFileUploadSuccess.style.display = "none";
@@ -49,7 +49,7 @@ function uploadMultipleFiles(files) {
             multipleFileUploadError.style.display = "none";
             let content = "<p>All Files Uploaded Successfully</p>";
             for(let i = 0; i < response.length; i++) {
-                content += "<p>DownloadUrl : <a href='" + response[i].fileDownloadUri + "' target='_blank'>" + response[i].fileName + "</a></p> <p>Share With QR <a href='" + "http://localhost:8080/qr?file="+ response[i].fileName +"'><img src=\"https://img.icons8.com/dusk/50/000000/link.png\"/></a></p>";
+                content += "<p>DownloadUrl : <a href='" + response[i].fileDownloadUri + "' target='_blank'>" + response[i].fileName + "</a></p> <p>Share With QR <a href='" + "http://localhost:8080/qr?file="+ response[i].fileName +"'><img src='"+"https://img.icons8.com/dusk/50/000000/link.png"+"'/></a></p>";
             }
             multipleFileUploadSuccess.innerHTML = content;
             multipleFileUploadSuccess.style.display = "block";
