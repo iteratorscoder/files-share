@@ -20,11 +20,10 @@ import java.nio.file.Paths;
 public class FileService {
 
     private final Path fileStorageLocation; // 文件在本地存储的地址
-    @Autowired
-    FileProperties fileProperties;
 
     //为什么会传递一个FileProperties进来？？？。下面这一串是在造地址？？？E:IdeaProjects_files-share_uploads
-    public FileService() {
+    @Autowired
+    public FileService(FileProperties fileProperties) {
         this.fileStorageLocation = Paths.get(fileProperties.getUploadDir()).toAbsolutePath().normalize();
         log.info("fileStorageLocation.toString() = " + fileStorageLocation.toString());
         try {
