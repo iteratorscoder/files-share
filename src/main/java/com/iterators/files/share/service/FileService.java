@@ -24,7 +24,7 @@ public class FileService {
     FileProperties fileProperties;
 
     //为什么会传递一个FileProperties进来？？？。下面这一串是在造地址？？？E:IdeaProjects_files-share_uploads
-    public FileService(FileProperties fileProperties) {
+    public FileService() {
         this.fileStorageLocation = Paths.get(fileProperties.getUploadDir()).toAbsolutePath().normalize();
         log.info("fileStorageLocation.toString() = " + fileStorageLocation.toString());
         try {
