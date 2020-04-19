@@ -2,17 +2,20 @@ package com.iterators.files.share.controller;
 
 import com.iterators.files.share.entity.FileUploadResponse;
 import com.iterators.files.share.service.FileService;
+import com.iterators.files.share.util.QRCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.core.io.UrlResource;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
@@ -56,6 +59,20 @@ public class FileController {
         ResponseEntity<Resource> resourceResponseEntity = fileService.loadFileAsResource(fileName, httpServletRequest);
         return resourceResponseEntity;
     }
+    //1、首先二维码保存一个信息（文件的链接），通过这个信息触发预览文件这个事情。
+    //2、客户点击“生成二维码”的功能，手机一扫二维码，就可以预览文件。手机一扫二维码，就可以预览文件。
+    //3、明确把哪一个文件生成二维码。
+    //4、写到浏览器里面预览
+    //5、提供一个把二维码生成一个图片保存到用户本地的功能（下载）
+
+    //content是文件名字。用户提供一个文件的名字。用户怎么提供的呢？类似于下载图片那种写法。
+    // 上传成功之后，会紧接着生成：main.js的第25行：<a href='" + response.fileDownloadUri + "，是一个可以允许用户下载的超链接
+    //同理，上传成功之后，也会生成一个类似的超链接，可以允许用户生成二维码
+    @RequestMapping(value = "/qr")
+    public void getQrCode(@RequestParam String fileName, HttpServletResponse response) {
+        fileService.getQrCodeService(fileName,300,300,response);
+    }
+
 }
 
 /*

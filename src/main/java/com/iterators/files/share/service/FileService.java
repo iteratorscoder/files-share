@@ -3,6 +3,7 @@ package com.iterators.files.share.service;
 import com.iterators.files.share.config.FileProperties;
 import com.iterators.files.share.entity.FileUploadResponse;
 import com.iterators.files.share.util.FileUtil;
+import com.iterators.files.share.util.QRCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,10 +14,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -112,4 +117,27 @@ public class FileService {
         }
 
     }
+
+
+   public void getQrCodeService(String content, @RequestParam int width, @RequestParam int height, HttpServletResponse response){
+   //    Path filePath = this.fileStorageLocation.resolve(content).normalize();//文件路径
+
+       String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFile/").path(content).toUriString();
+
+       ServletOutputStream outputStream = null;
+       try {
+           outputStream = response.getOutputStream();
+           QRCodeUtil.writeToStream(fileDownloadUri, outputStream, width, height);
+       } catch (Exception e) {
+           e.printStackTrace();
+       } finally {
+           if (outputStream != null) {
+               try {
+                   outputStream.close();
+               } catch (IOException e) {
+                   e.printStackTrace();
+               }
+           }
+       }
+   }
 }
