@@ -1,22 +1,16 @@
 package com.iterators.files.share.util;
-
-import org.springframework.stereotype.Component;
-
-import java.io.File;
+import lombok.extern.slf4j.Slf4j;
 import java.io.FileOutputStream;
 import java.io.IOException;
-@Component
-public class FileUtil {
+@Slf4j // 用于打印日志的注解，可以自动生成log对象
 
-    public void uploadFileUtil(byte[] file, String filePath, String fileName) throws IOException {
-        File targetFile = new File(filePath);
-        if(!targetFile.exists()){
-            targetFile.mkdirs();
-        }
+public class FileUtil {
+    public static void uploadFileUtil(byte[] file, String filePath, String fileName) throws IOException {
+        log.info("fileName:"+fileName);
+        log.info("filePath:"+filePath);
         FileOutputStream out = new FileOutputStream(filePath+fileName);
         out.write(file);
         out.flush();
         out.close();
     }
 }
-

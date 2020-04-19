@@ -12,7 +12,6 @@ public class FileProperties {
      */
     private String uploadDir;
     public String getUploadDir() {
-
         return uploadDir;
     }
 
