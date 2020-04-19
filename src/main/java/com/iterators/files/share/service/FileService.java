@@ -7,9 +7,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -62,5 +65,16 @@ public class FileService {
         } catch (IOException e) {
             throw new RuntimeException("Could not store file " + fileName + ". Please try again!");
         }
+    }
+
+
+    @GetMapping("/downloadFile/{fileName:.+}")
+    public void downloadFile(@PathVariable String fileName, HttpServletRequest httpServletRequest) {
+//fileName:被下载文件的名称
+
+        Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
+        log.info("==================filePath:" + filePath);
+
+
     }
 }

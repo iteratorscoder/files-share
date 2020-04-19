@@ -1,6 +1,8 @@
 package com.iterators.files.share.util;
 
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -9,7 +11,8 @@ public class FileUtil {
     public static void uploadFileUtil(byte[] file, String filePath, String fileName) throws IOException {
         log.info("fileName:"+fileName);
         log.info("filePath:"+filePath);
-        FileOutputStream out = new FileOutputStream(filePath+fileName);
+        log.info(" filePath+fileName:"+ filePath+fileName);
+        FileOutputStream out = new FileOutputStream(filePath+"\\\\\\\\"+fileName);
         out.write(file);
         out.flush();
         out.close();

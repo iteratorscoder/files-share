@@ -1,10 +1,10 @@
 package com.iterators.files.share.controller;
 
-
 import com.iterators.files.share.entity.FileUploadResponse;
 import com.iterators.files.share.service.FileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +24,6 @@ public class FileController {
     private FileService fileService;
 
     public static final String MARKER = "FileController";
-
 
     /**
      * 上传单个文件
