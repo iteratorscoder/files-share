@@ -5,15 +5,20 @@ import com.iterators.files.share.entity.FileUploadResponse;
 import com.iterators.files.share.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -67,14 +72,44 @@ public class FileService {
         }
     }
 
+    /**
+     * 加载文件
+     *
+     * @param fileName 文件名
+     * @return 文件
+     */
+    public ResponseEntity<Resource> loadFileAsResource(String fileName, HttpServletRequest httpServletRequest) throws MalformedURLException {
+        Resource resource = null;
+        try {
+            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();//文件路径
 
-    @GetMapping("/downloadFile/{fileName:.+}")
-    public void downloadFile(@PathVariable String fileName, HttpServletRequest httpServletRequest) {
-//fileName:被下载文件的名称
+            log.info("this.fileStorageLocation.resolve(fileName);" + this.fileStorageLocation.resolve(fileName).toString());
+            log.info("filePath;" + filePath.toString());
 
-        Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
-        log.info("==================filePath:" + filePath);
+            resource = new UrlResource(filePath.toUri());
+            if (resource.exists()) {
+                //尝试确定文件的内容类型。有什么用？？？？为了浏览器渲染???
+                String contentType = null;
+                try {
+                    contentType = httpServletRequest.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+                } catch (IOException ex) {
+                    log.info("Could not determine file type.");
+                }
+                // Fallback to the default content type if type could not be determined
+                if (contentType == null) {
+                    contentType = "application/octet-stream";
+                }
+                //这是再写响应报文吗？？好激动！！！效果看图1
+                return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                        .body(resource);
 
+            } else {
+                throw new RuntimeException("File not found " + fileName);
+            }
+        } catch (MalformedURLException ex) {
+            throw new RuntimeException("File not found " + fileName);
+        }
 
     }
 }

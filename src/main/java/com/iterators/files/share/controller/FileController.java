@@ -4,11 +4,18 @@ import com.iterators.files.share.entity.FileUploadResponse;
 import com.iterators.files.share.service.FileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.UrlResource;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
 
 /**
  * 处理文件上传和下载的逻辑，需要继续完成
@@ -38,8 +45,18 @@ public class FileController {
         log.info(MARKER + "store file success with data: {}", response);
         return response;
     }
-}
 
+    //http://localhost:8080/downloadFile/A%20-%20%E5%89%AF%E6%9C%AC.png
+    @GetMapping("/downloadFile/{fileName:.+}")//.+是个正则表达式。会把“A%20-%20%E5%89%AF%E6%9C%AC.png”都复制给fileName
+    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest httpServletRequest) throws MalformedURLException {
+        /*
+        fileName:被下载文件的名称
+        方法：它把待下载文件的内容保存到了响应体里面。在浏览器的页面上渲染出来了，但是没有保存到本地。
+        */
+        ResponseEntity<Resource> resourceResponseEntity = fileService.loadFileAsResource(fileName, httpServletRequest);
+        return resourceResponseEntity;
+    }
+}
 
 /*
  * "/uploadFile"和main.js中的第18行：
