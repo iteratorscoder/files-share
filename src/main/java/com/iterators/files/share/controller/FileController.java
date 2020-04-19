@@ -18,10 +18,17 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileController {
 
     public static final String MARKER = "FileController";
-
+/*
+* "/uploadFile"和main.js中的第18行：
+* xhr.open("POST", "/uploadFile"); // 上传单个文件
+* 是对应的。
+* */
     @PostMapping(value = "/uploadFile")
     public FileUploadResponse uploadSingleFile(@RequestParam("file") MultipartFile file) {
         log.info(MARKER + "receive a req for upload single file，name: {}", file.getOriginalFilename());
+
+//这里写文件的上传的逻辑
+
 
         return null;
     }
