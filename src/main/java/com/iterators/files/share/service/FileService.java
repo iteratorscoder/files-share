@@ -119,15 +119,20 @@ public class FileService {
     }
 
 
+    /**
+     * 为社么浏览器就可以显示出二维码了呢？？？把二维码写到了哪里呢？二维码又是怎么拼出来的呢？？？？
+     * @param content
+     * @param width
+     * @param height
+     * @param response
+     */
    public void getQrCodeService(String content, @RequestParam int width, @RequestParam int height, HttpServletResponse response){
-   //    Path filePath = this.fileStorageLocation.resolve(content).normalize();//文件路径
-
-       String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFile/").path(content).toUriString();
-
+    //   Path filePath = this.fileStorageLocation.resolve(content).normalize();//文件路径
+    //   String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFile/").path(content).toUriString();
        ServletOutputStream outputStream = null;
        try {
            outputStream = response.getOutputStream();
-           QRCodeUtil.writeToStream(fileDownloadUri, outputStream, width, height);
+           QRCodeUtil.writeToStream("Hello !!!", outputStream, width, height);
        } catch (Exception e) {
            e.printStackTrace();
        } finally {

@@ -59,22 +59,31 @@ public class FileController {
         ResponseEntity<Resource> resourceResponseEntity = fileService.loadFileAsResource(fileName, httpServletRequest);
         return resourceResponseEntity;
     }
-    //1、首先二维码保存一个信息（文件的链接），通过这个信息触发预览文件这个事情。
-    //2、客户点击“生成二维码”的功能，手机一扫二维码，就可以预览文件。手机一扫二维码，就可以预览文件。
-    //3、明确把哪一个文件生成二维码。
-    //4、写到浏览器里面预览
-    //5、提供一个把二维码生成一个图片保存到用户本地的功能（下载）
 
-    //content是文件名字。用户提供一个文件的名字。用户怎么提供的呢？类似于下载图片那种写法。
-    // 上传成功之后，会紧接着生成：main.js的第25行：<a href='" + response.fileDownloadUri + "，是一个可以允许用户下载的超链接
-    //同理，上传成功之后，也会生成一个类似的超链接，可以允许用户生成二维码
+
+
+
+
+    /**
+     * 1、首先二维码保存一个信息（文件的链接），通过这个信息触发预览文件这个事情。
+     * 2、客户点击“生成二维码”的功能，手机一扫二维码，就可以预览文件。手机一扫二维码，就可以预览文件。
+     * 3、明确把哪一个文件生成二维码。
+     * 4、写到浏览器里面预览
+     * 5、提供一个把二维码生成一个图片保存到用户本地的功能（下载）
+     *
+     *用户提供一个文件的名字。用户怎么提供的呢？类似于下载图片那种写法。
+     *上传成功之后，会紧接着生成：main.js的第25行：<a href='" + response.fileDownloadUri + "，是一个可以允许用户下载的超链接
+     * 同理，上传成功之后，也会生成一个类似的超链接，可以允许用户生成二维码
+     *
+     * @param fileName
+     * @param response
+     */
+
     @RequestMapping(value = "/qr")
-    public void getQrCode(@RequestParam String fileName, HttpServletResponse response) {
+    public void getQrCode(@RequestParam("file") String fileName, HttpServletResponse response) {
         fileService.getQrCodeService(fileName,300,300,response);
     }
-
 }
-
 /*
  * "/uploadFile"和main.js中的第18行：
  * xhr.open("POST", "/uploadFile"); // 上传单个文件
