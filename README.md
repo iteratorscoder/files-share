@@ -10,28 +10,19 @@
 
 
 
-需要了解的API：
+## 需要了解的API
 
-HttpServletRequest
-Resource
-
- httpServletRequest.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
- 
-  ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
+- `HttpServletRequest`
+- `Resource`
+- `httpServletRequest.getServletContext().getMimeType(resource.getFile().getAbsolutePath());`
+- `ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
                  .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                 .body(resource);
-                 
-                 
- Files.createDirectories(this.fileStorageLocation);
-   StringUtils.cleanPath
-   
-     
-
-String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFile/").path(fileName).toUriString();
-             
-new UrlResource(filePath.toUri())
-
-MultipartFile
+                 .body(resource);`
+- `Files.createDirectories(this.fileStorageLocation);`
+- `StringUtils.cleanPath`
+- `String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFile/").path(fileName).toUriString();`
+- `new UrlResource(filePath.toUri())`
+- `MultipartFile`
                  
                  
                  
