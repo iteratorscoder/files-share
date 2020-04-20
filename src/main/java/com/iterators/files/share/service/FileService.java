@@ -127,10 +127,10 @@ public class FileService {
      * @param response
      */
    public void getQrCodeService(String content, @RequestParam int width, @RequestParam int height, HttpServletResponse response){
-    //   Path filePath = this.fileStorageLocation.resolve(content).normalize();//文件路径
-    //   String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFile/").path(content).toUriString();
        ServletOutputStream outputStream = null;
        try {
+           //getOutputStream方法得到的是一个输出流，
+           // 服务端的Socket对象上的getOutputStream方法得到的输出流其实就是发送给客户端的数据。
            outputStream = response.getOutputStream();
            QRCodeUtil.writeToStream("Hello !!!", outputStream, width, height);
        } catch (Exception e) {
