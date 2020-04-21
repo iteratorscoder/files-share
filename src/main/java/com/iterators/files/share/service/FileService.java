@@ -2,6 +2,7 @@ package com.iterators.files.share.service;
 
 import com.iterators.files.share.config.FileProperties;
 import com.iterators.files.share.entity.FileUploadResponse;
+import com.iterators.files.share.entity.FolderResponse;
 import com.iterators.files.share.util.FileUtil;
 import com.iterators.files.share.util.QRCodeUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -22,17 +22,20 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 @Slf4j // 用于打印日志的注解，可以自动生成log对象
 @Service
 public class FileService {
 
-    private final Path fileStorageLocation; // 文件在本地存储的地址
+    private final Path fileStorageLocation; //文件在本地存储的地址
 
     //为什么会传递一个FileProperties进来？？？。下面这一串是在造地址？？？E:IdeaProjects_files-share_uploads
     @Autowired
@@ -121,28 +124,74 @@ public class FileService {
 
     /**
      * 为社么浏览器就可以显示出二维码了呢？？？把二维码写到了哪里呢？二维码又是怎么拼出来的呢？？？？
+     *
      * @param content
      * @param width
      * @param height
      * @param response
      */
-   public void getQrCodeService(String content, @RequestParam int width, @RequestParam int height, HttpServletResponse response){
-       ServletOutputStream outputStream = null;
-       try {
-           //getOutputStream方法得到的是一个输出流，
-           // 服务端的Socket对象上的getOutputStream方法得到的输出流其实就是发送给客户端的数据。
-           outputStream = response.getOutputStream();
-           QRCodeUtil.writeToStream("Hello !!!", outputStream, width, height);
-       } catch (Exception e) {
-           e.printStackTrace();
-       } finally {
-           if (outputStream != null) {
-               try {
-                   outputStream.close();
-               } catch (IOException e) {
-                   e.printStackTrace();
-               }
-           }
-       }
-   }
+    public void getQrCodeService(String content, @RequestParam int width, @RequestParam int height, HttpServletResponse response) {
+        ServletOutputStream outputStream = null;
+        try {
+            //getOutputStream方法得到的是一个输出流，
+            // 服务端的Socket对象上的getOutputStream方法得到的输出流其实就是发送给客户端的数据。
+            outputStream = response.getOutputStream();
+            QRCodeUtil.writeToStream("Hello !!!", outputStream, width, height);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    //创建子文件夹
+    public FolderResponse makeDirectrionService(String folderName, String parentFolder, HttpServletResponse response) {
+        log.info("folderName:" + folderName);
+        String path = "";
+        if (parentFolder == null) {
+            path = "E:/IdeaProjects/files-share/uploads" + "/" + folderName;//在/uploads下面创建目录
+            log.info("path:" + path.toString());
+            File folder = new File(path);
+        } else {
+            path = "E:/IdeaProjects/files-share/uploads" + parentFolder + "/" + folderName;
+            log.info("path:" + path.toString());
+
+        }
+        File folder = new File(path);
+        //创建目录。如果父目录不存在会连同父目录一起创建
+        boolean flag = folder.mkdirs();
+        //
+        String fileUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/dir/info?dirname=").path(folderName).toUriString();
+        log.info("fileUri:"+fileUri);
+        return new FolderResponse(folderName, path,fileUri);
+    }
+
+    public ArrayList showFileService(String folderName, String parentFolder) {
+        ArrayList<String> arrayList=new ArrayList<>();
+        String path = "";
+        if (parentFolder == null&&folderName==null) {
+            path = "E:/IdeaProjects/files-share/uploads";
+            log.info("path:" + path.toString());
+            File folder = new File(path);
+        }
+        if (parentFolder != null&&folderName!=null) {
+            path = "E:/IdeaProjects/files-share/uploads" + parentFolder + "/" + folderName;
+            log.info("path:" + path.toString());
+
+        }
+        File dir = new File(path);
+        //列出下一级名称
+        String[] subNames = dir.list();
+        for (String s : subNames) {
+            System.out.println(s);
+            arrayList.add(s);
+        }
+        return arrayList;
+    }
 }
