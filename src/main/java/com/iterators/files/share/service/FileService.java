@@ -1,13 +1,13 @@
 package com.iterators.files.share.service;
 
 import com.iterators.files.share.config.FileProperties;
+import com.iterators.files.share.entity.FileResponse;
 import com.iterators.files.share.entity.FileUploadResponse;
 import com.iterators.files.share.entity.FolderResponse;
 import com.iterators.files.share.util.FileUtil;
 import com.iterators.files.share.util.QRCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -155,10 +154,21 @@ public class FileService {
         log.info("folderName:" + folderName);
         String path = "";
         if (parentFolder == null) {
+            // TODO: 可以继续优化下
+            // "E:/IdeaProjects/files-share/uploads" + "/"
+            // 这种名字写死的方式弊端在于，如果我们修改了 ./uploads 这个配置项，那么就必须回来再修改这里的代码， "E:/IdeaProjects/files-share/uploads"
+            // 如果我们能够使用这个 resolve 解析的方式获取路径，那么即使我们修改了配置项 ./uploads，那么我们也不用修改这里的代码了，因为它就是根据我们的配置项来解析路径的
+            // 此处我们需要的是在已有的目录的下创建一个目录，那么，resolve方法刚好是支持这样的操作的，
+            // 合并两个路径的技术允许你先定义一个固定的根目录然后再附上局部的路径，在NIO.2 中，使用resolve() 方法来实现这一功能
+            // 比如： Path newPath = this.fileStorageLocation.resolve(folderName);
+            // 这里 this.fileStorageLocation 就是从我们的 ./uploads 目录解析出来的路径 E:/IdeaProjects/files-share/uploads
+            // 然后再在这个基础上添加了folderName, 那么 newPath 的值就是我们所需要的 E:/IdeaProjects/files-share/uploads/folderName 了
+            Path newPath = this.fileStorageLocation.resolve(folderName);
             path = "E:/IdeaProjects/files-share/uploads" + "/" + folderName;//在/uploads下面创建目录
             log.info("path:" + path.toString());
             File folder = new File(path);
         } else {
+            // 此处的代码也要使用 resolve的方式来解析路径
             path = "E:/IdeaProjects/files-share/uploads" + parentFolder + "/" + folderName;
             log.info("path:" + path.toString());
 
@@ -168,24 +178,45 @@ public class FileService {
         boolean flag = folder.mkdirs();
         //
         String fileUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/dir/info?dirname=").path(folderName).toUriString();
-        log.info("fileUri:"+fileUri);
-        return new FolderResponse(folderName, path,fileUri);
+        log.info("fileUri:" + fileUri);
+        return new FolderResponse(folderName, path, fileUri);
     }
 
     public ArrayList showFileService(String folderName, String parentFolder) {
-        ArrayList<String> arrayList=new ArrayList<>();
+        ArrayList<String> arrayList = new ArrayList<>();
         String path = "";
-        if (parentFolder == null&&folderName==null) {
+        if (parentFolder == null && folderName == null) {
+            // TODO: 此处的代码也要使用 resolve的方式来解析路径
             path = "E:/IdeaProjects/files-share/uploads";
             log.info("path:" + path.toString());
             File folder = new File(path);
         }
-        if (parentFolder != null&&folderName!=null) {
+        if (parentFolder != null && folderName != null) {
+            // TODO: 此处的代码也要使用 resolve的方式来解析路径
             path = "E:/IdeaProjects/files-share/uploads" + parentFolder + "/" + folderName;
             log.info("path:" + path.toString());
 
         }
         File dir = new File(path);
+        // TODO: 用于获取某个dir下的所有内容
+        ArrayList<FileResponse> responses = new ArrayList<>();
+        File[] files = dir.listFiles();
+        for (File file : files) {
+            String fileName = file.getName();
+            String dirName = file.getParent();
+            if (file.isDirectory()) {
+                // 判断某个文件是否是目录，也就是可以找出path下的子目录
+                String url = ""; // 需要拼接
+                boolean isFile = false;
+                responses.add(new FileResponse(fileName, dirName, url, isFile));
+            }
+            if (file.isFile()) {
+                // 这个文件不是目录，也就是可以找出path下的文件
+                String url = ""; // 需要拼接
+                boolean isFile = true;
+                responses.add(new FileResponse(fileName, dirName, url, isFile));
+            }
+        }
         //列出下一级名称
         String[] subNames = dir.list();
         for (String s : subNames) {
