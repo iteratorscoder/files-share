@@ -104,5 +104,6 @@ fabric.properties
 mvnw
 mvnw.cmd
 .mvn
+./uploads/
 
 
