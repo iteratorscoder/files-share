@@ -1,9 +1,10 @@
 package com.iterators.files.share.service;
 
 import com.iterators.files.share.config.FileProperties;
-import com.iterators.files.share.entity.FileResponse;
+import com.iterators.files.share.entity.FileVO;
 import com.iterators.files.share.entity.FileUploadResponse;
 import com.iterators.files.share.entity.FolderResponse;
+import com.iterators.files.share.entity.FolderVO;
 import com.iterators.files.share.util.FileUtil;
 import com.iterators.files.share.util.QRCodeUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -199,22 +200,44 @@ public class FileService {
         }
         File dir = new File(path);
         // TODO: 用于获取某个dir下的所有内容
-        ArrayList<FileResponse> responses = new ArrayList<>();
+        ArrayList<FolderVO> subDirList = new ArrayList<>();
+        ArrayList<FileVO> fileList = new ArrayList<>();
+        // 构建一个返回给前端的folder对象
+        FolderVO folder = FolderVO.builder()
+                .dirName(dir.getName())
+                .dirUrl("需要拼接构造")
+                .parentFolder(null) // 暂时设为空，需要改
+                .subDir(subDirList)
+                .files(fileList)
+                .build();
+
         File[] files = dir.listFiles();
         for (File file : files) {
             String fileName = file.getName();
-            String dirName = file.getParent();
             if (file.isDirectory()) {
                 // 判断某个文件是否是目录，也就是可以找出path下的子目录
                 String url = ""; // 需要拼接
-                boolean isFile = false;
-                responses.add(new FileResponse(fileName, dirName, url, isFile));
+                // 构建子目录对象并添加到subDirList
+                subDirList.add(
+                        FolderVO.builder()
+                                .dirName(fileName)
+                                .dirUrl("")
+                                .parentFolder(folder)
+                                .subDir(null)
+                                .files(null)
+                                .build()
+                );
             }
             if (file.isFile()) {
                 // 这个文件不是目录，也就是可以找出path下的文件
-                String url = ""; // 需要拼接
-                boolean isFile = true;
-                responses.add(new FileResponse(fileName, dirName, url, isFile));
+                // 构建文件对象并添加到fileList
+                fileList.add(
+                        FileVO.builder()
+                                .fileName(fileName)
+                                .dir(folder)
+                                .fileUrl("")
+                                .build()
+                );
             }
         }
         //列出下一级名称
