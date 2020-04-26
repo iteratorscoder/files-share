@@ -42,7 +42,6 @@
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
-
         <!-- com.alibaba.fastjson包的JSONObject类 -->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -50,8 +49,12 @@
             <version>1.2.53</version>
         </dependency>
 
-
-
+        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>29.0-jre</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.google.zxing/core -->
         <dependency>
