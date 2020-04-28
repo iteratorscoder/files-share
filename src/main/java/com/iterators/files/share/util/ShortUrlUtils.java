@@ -37,15 +37,15 @@ public class ShortUrlUtils {
     }
 
     private static String urlHashCodeToChars(int hashCode) {
+        StringBuilder builder = new StringBuilder();
         if (hashCode == 0) {
-            return "0";
+            return builder.append(ShortUrlConstants.CHARS_ARRAY[0]).toString();
         }
         log.info("hash code: {}", hashCode);
         if (hashCode < 0) {
             // hash值可能为负数，所以使用这个确保hashcode永远是正数
             hashCode = hashCode & Integer.MAX_VALUE;
         }
-        StringBuilder builder = new StringBuilder();
         while (hashCode != 0) {
             //6zH4pw
             int remainder = hashCode - (hashCode / 62) * 62;
